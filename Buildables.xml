@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<buildables>
+  <buildable Result="Flower Crown" RequiredBlueprints="Flower:10" IsItem="True" EnergyCost="5000"/>
+  <buildable Result="Wire Crown" RequiredBlueprints="Wire Strand:10" IsItem="True" EnergyCost="5000"/>
+</buildables>

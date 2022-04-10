@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <objects>
+  <object Name="Flower" Load="Merge">
+    <part Name="Physics" Weight="0" />
+    <part Name="FractionalWeight" Weight="0.1" />
+    <part Name="Stacker" />
+    <part Name="Commerce" Value="0.01" />
+    <tag Name="AlwaysStack"/>
+  </object>
   <object Name="Lah Petals" Load="Merge">
     <xtagGrammar groupTerm="handful" />
+  </object>
+  <object Name="Flower Crown" Inherits="Witchwood Wreath">
+    <part Name="RandomFlowerCrown" />
+    <part Name="Render" DisplayName="{{rainbow|flower}} crown" RenderString="]" Tile="Items/sw_wreath.bmp" ColorString="&amp;R" />
+    <part Name="Commerce" Value="0.2" />
+    <part Name="Description" Short="Plucked flowers, stems intertwined, hold each other in a tight embrace and form a fragrant diadem." />
+  </object>
+  <object Name="Wire Crown" Inherits="Witchwood Wreath">
+    <part Name="Render" DisplayName="{{rusty|wire crown}}" RenderString="]" Tile="Items/sw_wreath.bmp" ColorString="&amp;r" DetailColor="R" />
+    <part Name="Commerce" Value="0.1" />
+    <part Name="Physics" Weight="4" />
+    <part Name="Description" Short="Coiled wire twists around itself, forming a thorny crown of tarnished copper." />
+    <!-- made with 100' of wire; coiled/looped probably four or five times -->
   </object>
 </objects>
