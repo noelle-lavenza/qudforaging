@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<populations>
+  <population Name="Forage_TerrainFlowerfields_Surface">
+    <group Name="Items" Style="pickone">
+        <object Blueprint="Flower" Number="2d3" Weight="30" />
+        <object Blueprint="Lah Petals" Number="1d3" Weight="15" />
+        <object Blueprint="water" Number="1d6" Weight="4" Hint="Liquid" />
+        <object Blueprint="Lover's Blossom" Weight="1" />
+    </group>
+  </population>
+  <population Name="Forage_TerrainSaltmarsh_Surface">
+    <group Name="Items" Style="pickone">
+        <object Blueprint="Vinewafer" Number="1d3" />
+        <object Blueprint="water-1000,algae-500" Number="1-10" Hint="Liquid"/>
+    </group>
+  </population>
+  <population Name="Forage_TerrainSaltdunes_Surface">
+    <group Name="Items" Style="pickone">
+        <object Blueprint="salt-1000" Number="10-20" Hint="Liquid" />
+    </group>
+  </population>
+  <population Name="Forage_TerrainSaltdunes_Underground">
+    <table Name="Forage_TerrainSaltdunes_Surface" />
+  </population>
+  <population Name="Forage_TerrainSaltdunes_DeepUnderground">
+    <table Name="Forage_TerrainSaltdunes_Underground" />
+  </population>
+  <population Name="Forage_TerrainWater_Surface">
+    <group Name="Items" Style="pickone">
+        <table Weight="1" Number="1" Name="Scrap 2" /> <!-- trash floating down the river, basically -->
+    </group>
+  </population>
+  <population Name="Forage_TerrainJungle_Surface">
+    <group Name="Items" Style="pickone">
+
+    </group>
+  </population>
+  <population Name="Forage_TerrainRustWell_Surface">
+    <group Name="Items" Style="pickone">
+      <object Blueprint="Wire" Number="2d3" />
+    </group>
+  </population>
+  <population Name="Forage_TerrainRustWell_Underground">
+    <group Name="Items" Style="pickone">
+      <object Blueprint="Wire" Number="2d4" Weight="20" />
+      <object Blueprint="Scrap Metal" Number="1" Weight="5" />
+    </group>
+  </population>
+  <population Name="Forage_TerrainRustWell_DeepUnderground">
+    <group Name="Items" Style="pickone">
+      <object Blueprint="Wire" Number="2d6" Weight="10" />
+      <object Blueprint="Scrap Metal" Number="1" Weight="5" />
+      <table Number="1" Name="Scrap 2" Weight="1" />
+    </group>
+  </population>
+</populations>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<skills Load="Merge">
+    <skill Name="Cooking and Gathering" Load="Merge">
+        <power Name="Foraging" Cost="0" Attribute="Intelligence" Minimum="16" Class="QudForaging_ForagingSkill" Snippet="foraging" Description="You can forage for materials in the area around you."></power>
+    </skill>
+</skills>
