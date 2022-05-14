@@ -53,7 +53,7 @@ namespace XRL.World.Effects
 		public override void Remove(GameObject Object)
 		{
 			Object?.pBrain?.Goals.Peek().FailToParent();
-			if (Duration <= 0)
+			if (Duration <= 0 && Object.IsPlayer())
 			{
 				MessageQueue.AddPlayerMessage("You finish foraging.", "&y");
 			}
@@ -128,7 +128,10 @@ namespace XRL.World.Effects
 				}
 				else
 				{
-					MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+					if (Object.IsPlayer())
+					{
+						MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+					}
 					Object.RemoveEffect(this);
 					return true;
 				}
@@ -144,7 +147,10 @@ namespace XRL.World.Effects
 				{
 					if (!base.Object.IsPlayer() || (Popup.ShowYesNo("You're taking damage, stop foraging?", AllowEscape: true, DialogResult.Yes) == DialogResult.Yes))
 					{
-						MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+						if (Object.IsPlayer())
+						{
+							MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+						}
 						Object.RemoveEffect(this);
 						return true;
 					}
@@ -155,7 +161,10 @@ namespace XRL.World.Effects
 				if (!Object.CanMoveExtremities(ShowMessage: true))
 				{
 					Object.RemoveEffect(this);
-					MessageQueue.AddPlayerMessage("You can't forage in your condition.", "&y");
+					if (Object.IsPlayer())
+					{
+						MessageQueue.AddPlayerMessage("You can't forage in your condition.", "&y");
+					}
 					return true;
 				}
 				if (FailureStrikes > 0)
@@ -182,16 +191,20 @@ namespace XRL.World.Effects
 			// scale chance to roll with intelligence
 			// The.Player.StatMod("Intelligence")
 
-			if(Stat.Random(1, (Math.Max(2, 10 - The.Player.StatMod("Intelligence")))) != 1)
+			int intRoll = Stat.Random(1, Math.Max(2, 10 - Object.StatMod("Intelligence")));
+			MetricsManager.LogWarning($"Forage tag: \"Forage_Terrain{this.ForageTag}\"; roll: {intRoll}/{Math.Max(2, 10 - Object.StatMod("Intelligence"))}");
+			if(intRoll != 1)
 			{
 				return; // you failed the vibe check
 			}
 			// we've succeeded, now roll a result from the table
-
 			List<PopulationResult> forageResults = PopulationManager.Generate("Forage_Terrain" + this.ForageTag);
 			if (forageResults.Count() <= 0)
 			{
-				MessageQueue.AddPlayerMessage("You forage nothing.", "&y");
+				if (Object.IsPlayer())
+				{
+					MessageQueue.AddPlayerMessage("You forage nothing.", "&y");
+				}
 				return;
 			}
 			List<string> foragedItems = new List<string>();
@@ -200,7 +213,10 @@ namespace XRL.World.Effects
 				MetricsManager.LogWarning($"Foraged {forageResult.Number}x {forageResult.Blueprint} with hint {forageResult.Hint}");
 				foragedItems.Add(HandleForageSpawn(forageResult.Blueprint, forageResult.Number, forageResult.Hint));
 			}
-			MessageQueue.AddPlayerMessage($"You forage {Grammar.MakeAndList(foragedItems)}.", "&y");
+			if (Object.IsPlayer())
+			{
+				MessageQueue.AddPlayerMessage($"You forage {Grammar.MakeAndList(foragedItems)}.", "&y");
+			}
 		}
 
 		public string HandleForageSpawn(string Blueprint, int Number, string Hint) // returns a descriptive string of what was spawned
