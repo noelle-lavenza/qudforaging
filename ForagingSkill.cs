@@ -29,19 +29,30 @@ namespace XRL.World.Parts.Skill
 			{
 				if (ParentObject.IsPlayer())
 				{
-					return TryForagePlayer();
+					return TryForage();
 				}
 				return false;
 			}
 			return base.FireEvent(E);
 		}
 
-		public bool TryForagePlayer()
+		public string GetZoneForageTable(Zone CurrentZone)
 		{
-			string objectTypeForZone = ZoneManager.GetObjectTypeForZone(The.Player.CurrentZone.ZoneID);
-			string tag = GameObjectFactory.Factory.Blueprints[objectTypeForZone].GetTag("Terrain");
-			int depth = 10 - The.Player.CurrentZone.Z;
-			MetricsManager.LogInfo($"Depth {depth}, Z {The.Player.CurrentZone.Z}");
+			string bp_tag = GetZoneForageTableInternal(CurrentZone, "AlternateTerrainName");
+			if(bp_tag != null)
+			{
+				return bp_tag;
+			}
+			return GetZoneForageTableInternal(CurrentZone, "Terrain");
+		}
+
+		public string GetZoneForageTableInternal(Zone CurrentZone, string bp_tag)
+		{
+			string objectTypeForZone = ZoneManager.GetObjectTypeForZone(CurrentZone.ZoneID);
+			GameObjectBlueprint zoneObjectBlueprint = GameObjectFactory.Factory.Blueprints[objectTypeForZone];
+			string tag = zoneObjectBlueprint.GetTag(bp_tag);
+			int depth = 10 - CurrentZone.Z;
+			//MetricsManager.LogInfo($"Depth {depth}, Z {CurrentZone.Z}");
 			if (depth > 30)
 			{
 				tag += "_DeepUnderground";
@@ -58,8 +69,12 @@ namespace XRL.World.Parts.Skill
 			{
 				tag += "_Surface";
 			}
-			
-			ParentObject.ApplyEffect(new XRL.World.Effects.Foraging(50, tag)); // 50 turns = 1 hour
+			return tag;
+		}
+
+		public bool TryForage()
+		{
+			ParentObject.ApplyEffect(new XRL.World.Effects.Foraging(50, GetZoneForageTable(ParentObject.CurrentZone))); // 50 turns = 1 hour
 			return true;
 		}
 		
