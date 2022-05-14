@@ -37,18 +37,18 @@
   </population>
   <population Name="Forage_TerrainRustWell_Surface">
     <group Name="Items" Style="pickone">
-      <object Blueprint="Wire" Number="2d3" />
+      <object Blueprint="Wire Strand" Number="2d3" Weight="50" />
     </group>
   </population>
   <population Name="Forage_TerrainRustWell_Underground">
     <group Name="Items" Style="pickone">
-      <object Blueprint="Wire" Number="2d4" Weight="20" />
+      <object Blueprint="Wire Strand" Number="2d4" Weight="20" />
       <object Blueprint="Scrap Metal" Number="1" Weight="5" />
     </group>
   </population>
   <population Name="Forage_TerrainRustWell_DeepUnderground">
     <group Name="Items" Style="pickone">
-      <object Blueprint="Wire" Number="2d6" Weight="10" />
+      <object Blueprint="Wire Strand" Number="2d6" Weight="10" />
       <object Blueprint="Scrap Metal" Number="1" Weight="5" />
       <table Number="1" Name="Scrap 2" Weight="1" />
     </group>
