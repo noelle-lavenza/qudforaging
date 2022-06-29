@@ -23,6 +23,8 @@ namespace XRL.World.Effects
 			base.DisplayName = "Foraging";
 		}
 
+		private bool inMenu = false;
+
 		private string ForageTag;
 		private int FailureStrikes = 0;
 
@@ -50,13 +52,18 @@ namespace XRL.World.Effects
 			return base.Apply(Object);
 		}
 
-		public override void Remove(GameObject Object)
+		public override void Expired()
 		{
-			Object?.pBrain?.Goals.Peek().FailToParent();
-			if (Duration <= 0 && Object.IsPlayer())
+			if (Object.IsPlayer())
 			{
 				MessageQueue.AddPlayerMessage("You finish foraging.", "&y");
-			}
+			}	
+			base.Expired();
+		}
+
+		public override void Remove(GameObject Object)
+		{
+			Object?.pBrain?.Goals.Peek()?.FailToParent();
 			base.Remove(Object);
 		}
 
@@ -107,33 +114,39 @@ namespace XRL.World.Effects
 
 		public override bool HandleEvent(CommandTakeActionEvent E)
 		{
+			inMenu = true;
 			if (Object.IsPlayer() && Object.ArePerceptibleHostilesNearby(logSpot: true, popSpot: true, Description: "foraging", IgnoreEasierThan: Options.AutoexploreIgnoreEasyEnemies, IgnoreFartherThan: Options.AutoexploreIgnoreDistantEnemies))
 			{
 				Object.RemoveEffect(this);
+				inMenu = false;
 				return false;
 			}
+			inMenu = false;
 			return base.HandleEvent(E);
 		}
 
 		public override bool HandleEvent(BeforeRenderEvent E)
 		{
-			Keyboard.KeyEvent.WaitOne(20);
-			if (Keyboard.kbhit())
+			if (!inMenu)
 			{
-				Keys ourKey = Keyboard.getvk(false);
-				if (ourKey != Keys.Escape)
+				Keyboard.KeyEvent.WaitOne(20);
+				if (Keyboard.kbhit())
 				{
-					Keyboard.ReverseKeymap.TryGetValue(ourKey, out var unityKey);
-					Keyboard.PushKey(unityKey);
-				}
-				else
-				{
-					if (Object.IsPlayer())
+					Keys ourKey = Keyboard.getvk(false);
+					if (ourKey != Keys.Escape)
 					{
-						MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+						Keyboard.ReverseKeymap.TryGetValue(ourKey, out var unityKey);
+						Keyboard.PushKey(unityKey);
 					}
-					Object.RemoveEffect(this);
-					return true;
+					else
+					{
+						if (Object.IsPlayer())
+						{
+							MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
+						}
+						Object.RemoveEffect(this);
+						return true;
+					}
 				}
 			}
 			return base.HandleEvent(E);
@@ -145,6 +158,7 @@ namespace XRL.World.Effects
 			{
 				if ((E.GetParameter("Damage") as Damage).Amount > 0)
 				{
+					inMenu = true;
 					if (!base.Object.IsPlayer() || (Popup.ShowYesNo("You're taking damage, stop foraging?", AllowEscape: true, DialogResult.Yes) == DialogResult.Yes))
 					{
 						if (Object.IsPlayer())
@@ -152,8 +166,10 @@ namespace XRL.World.Effects
 							MessageQueue.AddPlayerMessage("You stop foraging.", "&y");
 						}
 						Object.RemoveEffect(this);
+						inMenu = false;
 						return true;
 					}
+					inMenu = false;
 				}
 			}
 			else if (E.ID == "AfterMoved")
@@ -226,6 +242,10 @@ namespace XRL.World.Effects
 				LiquidVolume tempLiquid = GameObject.create("Water").LiquidVolume;
 				tempLiquid.InitialLiquid = Blueprint;
 				tempLiquid.Volume = Number;
+				tempLiquid.Update(); // to normalise proportions/primary
+				Blueprint = tempLiquid.GetLiquidDesignation();
+				StringBuilder liquidName = new StringBuilder();
+				tempLiquid.AppendLiquidName(liquidName);
 				int leftover = Number - Object.GetStorableDrams(Blueprint);
 				// excess liquid gets spilled on the floor
 				if (leftover <= 0)
@@ -238,8 +258,6 @@ namespace XRL.World.Effects
 					tempLiquid.Volume = leftover;
 					tempLiquid.PourIntoCell(Object.CurrentCell, leftover);
 				}
-				StringBuilder liquidName = new StringBuilder();
-				tempLiquid.AppendLiquidName(liquidName);
 				tempLiquid.ParentObject.Destroy();
 				return (Number > 1 ? $"{Grammar.Cardinal(Number)} drams" : "a dram") + " of " + liquidName;
 			}

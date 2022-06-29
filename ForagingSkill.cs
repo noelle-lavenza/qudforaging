@@ -39,7 +39,7 @@ namespace XRL.World.Parts.Skill
 		public string GetZoneForageTable(Zone CurrentZone)
 		{
 			string bp_tag = GetZoneForageTableInternal(CurrentZone, "AlternateTerrainName");
-			if(bp_tag != null)
+			if(bp_tag != null && PopulationManager.HasPopulation("Forage_"+bp_tag))
 			{
 				return bp_tag;
 			}
