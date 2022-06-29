@@ -3,5 +3,6 @@
 	"title": "{{g|Forage!}}",
 	"description": "Adds foraging mechanics, with zone-dependent loot rewards.",
 	"version": "1.0.0",
-	"author": "{{c|Jade Lavenza}}"
+	"author": "{{c|Noelle Lavenza}}",
+	"loadorder": -1
 }
